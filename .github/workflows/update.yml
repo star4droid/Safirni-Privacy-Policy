@@ -1,0 +1,25 @@
+name: Update buses in Firebase
+
+on:
+  push:
+    paths:
+      - "buses.json"
+
+jobs:
+  update:
+    if: ${{ !contains(github.event.head_commit.message, 'BOT') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install firebase-admin
+
+      - run: node update.js
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DB_URL: ${{ secrets.FIREBASE_DB_URL }}
